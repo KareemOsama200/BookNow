@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ subject.name }} - منصة تعليمية{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">الرئيسية</a></li>
+        <li class="breadcrumb-item active">{{ subject.name }}</li>
+    </ol>
+</nav>
+
+<div class="page-header mb-4">
+    <h1>{{ subject.name }}</h1>
+    {% if subject.description %}
+    <p class="lead">{{ subject.description }}</p>
+    {% endif %}
+</div>
+
+<!-- قسم البحث المحسن -->
+<div class="search-section py-3 mb-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-3">
+            <div class="input-group">
+                <input type="text" id="section-search" class="form-control" placeholder="ابحث في الأقسام...">
+                <button class="btn btn-primary" type="button">
+                    <i class="fas fa-search me-1"></i> بحث
+                </button>
+            </div>
+            <!-- عرض نتائج البحث -->
+            <div id="sectionSearchResults"></div>
+        </div>
+    </div>
+</div>
+
+{% if sections %}
+<div class="row" id="sectionsContainer">
+    {% for section in sections %}
+    <div class="col-md-4 col-sm-6 mb-4 section-item">
+        <div class="card section-card h-100 border-0 shadow-sm">
+            <div class="card-header bg-info text-white py-3">
+                <h3 class="card-title fs-5 mb-0">{{ section.name }}</h3>
+            </div>
+            <div class="card-body">
+                {% if section.description %}
+                <p class="card-text section-description">{{ section.description }}</p>
+                {% else %}
+                <p class="card-text section-description text-muted">استعرض محتويات قسم {{ section.name }}</p>
+                {% endif %}
+                <a href="{{ url_for('section', section_id=section.id) }}" class="btn btn-outline-primary">
+                    <i class="fas fa-folder-open me-1"></i> تصفح القسم
+                </a>
+            </div>
+            <div class="card-footer text-muted bg-light">
+                <small>
+                    <i class="fas fa-file me-1"></i> 
+                    {{ section.files|length }} ملف
+                </small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>
+    لا توجد أقسام متاحة لهذه المادة بعد.
+</div>
+{% endif %}
+
+<div class="mt-5">
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-right me-1"></i> العودة للرئيسية
+    </a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // البحث في الأقسام
+    const sectionSearchInput = document.getElementById('section-search');
+    const sectionItems = document.querySelectorAll('.section-item');
+    
+    if (sectionSearchInput && sectionItems.length > 0) {
+        sectionSearchInput.addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            let visibleCount = 0;
+            
+            sectionItems.forEach(section => {
+                const title = section.querySelector('.card-title').textContent.toLowerCase();
+                const description = section.querySelector('.section-description') ? 
+                                   section.querySelector('.section-description').textContent.toLowerCase() : '';
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    section.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+            
+            // إظهار نتائج البحث
+            const resultsContainer = document.getElementById('sectionSearchResults');
+            if (searchTerm.length > 0) {
+                if (visibleCount === 0) {
+                    resultsContainer.innerHTML = '<div class="alert alert-info mt-3">لم يتم العثور على نتائج مطابقة لـ "' + searchTerm + '"</div>';
+                } else {
+                    resultsContainer.innerHTML = '<div class="alert alert-success mt-3">تم العثور على ' + visibleCount + ' قسم مطابق</div>';
+                }
+            } else {
+                resultsContainer.innerHTML = '';
+            }
+        });
+        
+        // تفعيل زر البحث
+        const searchButton = document.querySelector('.search-section .btn-primary');
+        if (searchButton) {
+            searchButton.addEventListener('click', function() {
+                const event = new Event('keyup');
+                sectionSearchInput.dispatchEvent(event);
+            });
+        }
+    }
+});
+</script>
+{% endblock %}
