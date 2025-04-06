@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}إحصائيات التحميل - منصة تعليمية{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3">
+        <div class="admin-sidebar">
+            <h4 class="px-3 mb-3 text-white">لوحة التحكم</h4>
+            <div class="nav flex-column">
+                <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                    <i class="fas fa-tachometer-alt me-1"></i> الرئيسية
+                </a>
+                <a class="nav-link" href="{{ url_for('admin.manage_subjects') }}">
+                    <i class="fas fa-book me-1"></i> إدارة المواد
+                </a>
+                <a class="nav-link active" href="{{ url_for('admin.stats') }}">
+                    <i class="fas fa-chart-bar me-1"></i> إحصائيات التحميل
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="col-md-9">
+        <h1 class="mb-4">إحصائيات التحميل</h1>
+        
+        <!-- Summary Stats -->
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">إجمالي التحميلات</h5>
+                        <div class="stats-number">{{ total_downloads }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">عدد الملفات</h5>
+                        <div class="stats-number">{{ files|length }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Downloads Table -->
+        {% if files %}
+        <div class="card bg-dark">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">ترتيب الملفات حسب عدد التحميل</h5>
+                <div>
+                    <input type="text" id="search-input" class="form-control form-control-sm" placeholder="بحث...">
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-dark mb-0 stats-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">اسم الملف</th>
+                                <th scope="col">المادة</th>
+                                <th scope="col">القسم</th>
+                                <th scope="col">النوع</th>
+                                <th scope="col" class="text-center">التحميلات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in files %}
+                            <tr class="file-item">
+                                <td>{{ loop.index }}</td>
+                                <td class="file-name">
+                                    <a href="{{ url_for('download_file', file_id=file.id) }}" target="_blank" class="text-truncate d-block" style="max-width: 200px;">
+                                        {{ file.original_filename }}
+                                    </a>
+                                </td>
+                                <td>{{ file.section.subject.name }}</td>
+                                <td>{{ file.section.name }}</td>
+                                <td><span class="badge bg-secondary">{{ file.file_type }}</span></td>
+                                <td class="text-center">
+                                    <span class="badge bg-primary fs-6">{{ file.download_count }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            لا توجد ملفات في النظام بعد. قم بإضافة بعض الملفات لرؤية الإحصائيات.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const fileItems = document.querySelectorAll('.file-item');
+            
+            fileItems.forEach(item => {
+                const fileName = item.querySelector('.file-name').textContent.toLowerCase();
+                const rowData = item.textContent.toLowerCase();
+                
+                if (fileName.includes(searchTerm) || rowData.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

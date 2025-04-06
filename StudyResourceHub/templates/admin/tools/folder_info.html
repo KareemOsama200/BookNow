@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}معلومات المجلدات{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>معلومات المجلدات</h1>
+        <div>
+            <a href="{{ url_for('admin_tools.tools_index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-right ml-1"></i> العودة
+            </a>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">بنية المجلدات</h5>
+        </div>
+        <div class="card-body">
+            <p>
+                مجلدات المواد والأقسام تتبع البنية التالية:
+                <code>uploads/[رقم المادة]_[اسم المادة]/[رقم القسم]_[اسم القسم]/</code>
+            </p>
+            <p>
+                المجلدات تستخدم أسماء المواد والأقسام بالإضافة إلى أرقامها، مما يجعل التنقل أسهل.
+                إذا لم تكن المجلدات موجودة، سيتم إنشاؤها تلقائيًا عند رفع ملف جديد.
+            </p>
+            <p>
+                الملاحظة: يتم أيضًا دعم الصيغة القديمة للمجلدات <code>uploads/[رقم المادة]/[رقم القسم]/</code>
+                للحفاظ على توافق النظام مع الملفات المرفوعة سابقًا.
+            </p>
+            <div class="alert alert-primary">
+                <i class="fas fa-info-circle"></i> يمكنك إنشاء المجلدات يدويًا ووضع الملفات فيها، ثم استخدام أداة "مزامنة الملفات"
+                لإضافتها إلى قاعدة البيانات.
+            </div>
+        </div>
+    </div>
+    
+    <div class="accordion" id="folderAccordion">
+    {% for subject in folder_info %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ subject.id }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#collapse{{ subject.id }}" aria-expanded="false" 
+                        aria-controls="collapse{{ subject.id }}">
+                    <strong>{{ subject.name }}</strong>
+                    <span class="badge {% if subject.folder_exists %}bg-success{% else %}bg-danger{% endif %} ms-2">
+                        المجلد {% if subject.folder_exists %}موجود{% else %}غير موجود{% endif %}
+                    </span>
+                </button>
+            </h2>
+            <div id="collapse{{ subject.id }}" class="accordion-collapse collapse" 
+                 aria-labelledby="heading{{ subject.id }}" data-bs-parent="#folderAccordion">
+                <div class="accordion-body">
+                    <p><strong>رقم المادة:</strong> {{ subject.id }}</p>
+                    <p><strong>اسم المجلد:</strong> <code>{{ subject.folder_name }}</code></p>
+                    <p><strong>مسار المجلد الجديد:</strong> <code>{{ subject.folder_path }}</code></p>
+                    <p><strong>مسار المجلد القديم:</strong> <code>{{ subject.legacy_path }}</code></p>
+                    
+                    <h5 class="mt-3 mb-2">الأقسام:</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>رقم القسم</th>
+                                    <th>اسم القسم</th>
+                                    <th>مسار المجلد</th>
+                                    <th>حالة المجلد</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if subject.sections %}
+                                    {% for section in subject.sections %}
+                                    <tr>
+                                        <td>{{ section.id }}</td>
+                                        <td>{{ section.name }}</td>
+                                        <td>
+                                            <div><small>المجلد الجديد:</small> <code>{{ section.folder_name }}</code></div>
+                                            <div class="mt-1"><small>المسار الجديد:</small> <code>{{ section.folder_path }}</code></div>
+                                            <div class="mt-1"><small>المسار القديم:</small> <code>{{ section.legacy_path }}</code></div>
+                                        </td>
+                                        <td>
+                                            <span class="badge {% if section.folder_exists %}bg-success{% else %}bg-danger{% endif %}">
+                                                {% if section.folder_exists %}موجود{% else %}غير موجود{% endif %}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center">لا توجد أقسام</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    
+    {% if not folder_info %}
+    <div class="alert alert-warning">
+        لا توجد مواد في قاعدة البيانات.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

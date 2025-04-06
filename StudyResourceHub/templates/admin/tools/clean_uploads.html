@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}تنظيف مجلدات الملفات{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>تنظيف مجلدات الملفات</h1>
+        <div>
+            <a href="{{ url_for('admin_tools.tools_index") }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-right ml-1"></i> العودة
+            </a>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">معلومات عن تنظيف المجلدات</h5>
+        </div>
+        <div class="card-body">
+            <p>
+                تقوم هذه الأداة بتحديد المجلدات والملفات غير المرتبطة بأي مادة أو قسم في قاعدة البيانات،
+                مما يساعدك على تنظيف مجلد الملفات من أي محتوى غير مستخدم.
+            </p>
+            <div class="alert alert-warning">
+                <strong>تنبيه هام:</strong> حذف المجلدات سيؤدي إلى حذف جميع الملفات الموجودة فيها.
+                تأكد من أنك لا تحتاج إلى هذه الملفات قبل الحذف.
+            </div>
+        </div>
+    </div>
+    
+    {% if folders_to_clean %}
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">المجلدات المقترح حذفها</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>اسم المجلد</th>
+                                <th>المسار</th>
+                                <th>المحتويات</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for folder in folders_to_clean %}
+                            <tr>
+                                <td>{{ folder.name }}</td>
+                                <td><code>{{ folder.path }}</code></td>
+                                <td>
+                                    {% if folder.contents|length > 0 %}
+                                        <button class="btn btn-sm btn-info" type="button" 
+                                                data-bs-toggle="collapse" 
+                                                data-bs-target="#contents{{ loop.index }}" 
+                                                aria-expanded="false">
+                                            عرض المحتويات ({{ folder.contents|length }})
+                                        </button>
+                                        <div class="collapse mt-2" id="contents{{ loop.index }}">
+                                            <div class="card card-body">
+                                                <ul class="list-group">
+                                                    {% for item in folder.contents %}
+                                                    <li class="list-group-item">{{ item }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted">المجلد فارغ</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form method="post" onsubmit="return confirm(\"هل أنت متأكد من حذف هذا المجلد وجميع محتوياته؟\");">
+                                        <input type="hidden" name="action" value="clean_folder">
+                                        <input type="hidden" name="folder_path" value="{{ folder.path }}">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash me-1"></i> حذف المجلد
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-success">
+            <h5 class="alert-heading">لا توجد مجلدات للتنظيف!</h5>
+            <p>
+                جميع المجلدات في مجلد الملفات (uploads) مرتبطة بمواد وأقسام موجودة في قاعدة البيانات.
+                نظام الملفات نظيف ومنظم بشكل جيد.
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

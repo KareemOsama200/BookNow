@@ -1,0 +1,408 @@
+/* أنماط CSS الأساسية للمنصة التعليمية */
+
+:root {
+    --primary-color: #8e44ad;     /* لون أرجواني أساسي */
+    --secondary-color: #6c3483;   /* لون أرجواني داكن */
+    --accent-color: #f39c12;      /* لون برتقالي للتأكيد */
+    --success-color: #2ecc71;     /* لون أخضر للنجاح */
+    --danger-color: #e74c3c;      /* لون أحمر للتنبيهات */
+    --warning-color: #f39c12;     /* لون برتقالي للتحذيرات */
+    --light-bg: #f8f9fa;          /* خلفية فاتحة */
+    --dark-bg: #343a40;           /* خلفية داكنة */
+    --light-text: #ffffff;        /* نص أبيض */
+    --dark-text: #333333;         /* نص أسود */
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-bg);
+    color: var(--dark-text);
+}
+
+/* أنماط شريط البحث الرئيسي */
+.search-section {
+    margin-bottom: 2rem;
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-section .input-group {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+}
+
+.search-section .form-control {
+    border-radius: 0.5rem 0 0 0.5rem;
+    height: 3.5rem;
+    font-size: 1.1rem;
+    border: 1px solid #dee2e6;
+}
+
+.search-section .btn {
+    border-radius: 0 0.5rem 0.5rem 0;
+    font-size: 1.1rem;
+    height: 3.5rem;
+    min-width: 8rem;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--light-text);
+}
+
+/* البطاقات */
+.card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    background-color: white;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    font-weight: 600;
+    background-color: var(--primary-color);
+    color: var(--light-text);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card-body {
+    background-color: white;
+    color: var(--dark-text);
+}
+
+/* تنسيق المواد الدراسية */
+.subject-card .card-header {
+    border-radius: 0;
+}
+
+.subject-card .badge {
+    font-weight: 500;
+    font-size: 0.85rem;
+    background-color: var(--accent-color);
+    color: var(--light-text);
+}
+
+/* تنسيق الأقسام */
+.section-card {
+    margin-bottom: 1.5rem;
+}
+
+/* قائمة الملفات */
+.file-list {
+    list-style: none;
+    padding: 0;
+}
+
+.file-item {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    transition: all 0.3s;
+    background-color: white;
+}
+
+.file-item:hover {
+    background-color: rgba(142, 68, 173, 0.05);
+    border-color: rgba(142, 68, 173, 0.3);
+}
+
+.file-link {
+    text-decoration: none;
+    color: var(--dark-text);
+    display: block;
+    padding: 1rem;
+}
+
+.file-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-right: 1rem;
+}
+
+.file-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--primary-color);
+}
+
+.file-meta {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.download-count {
+    background-color: var(--light-bg);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.85rem;
+    color: var(--dark-text);
+}
+
+/* أنماط لوحة التحكم */
+.stats-card {
+    text-align: center;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.stats-card i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.stats-card .stats-title {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    opacity: 0.8;
+    color: #6c757d;
+}
+
+.stats-card .stats-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+/* تحسينات لنموذج تحميل الملفات */
+.upload-preview {
+    border: 1px dashed #dee2e6;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1rem;
+    background-color: var(--light-bg);
+}
+
+.file-upload-field {
+    position: relative;
+}
+
+.file-upload-btn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0 0.25rem 0.25rem 0;
+}
+
+/* مؤشر التقدم */
+.progress {
+    height: 0.75rem;
+    border-radius: 1rem;
+    margin-top: 0.5rem;
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    background-color: var(--primary-color);
+}
+
+/* تمييز نتائج البحث */
+.search-highlight {
+    animation: highlight-pulse 2s;
+}
+
+@keyframes highlight-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(142, 68, 173, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(142, 68, 173, 0); }
+}
+
+/* أنماط البحث */
+#searchResults {
+    margin-top: 1rem;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* تحسينات للأجهزة المحمولة */
+@media (max-width: 767.98px) {
+    .stats-card .stats-value {
+        font-size: 2rem;
+    }
+    
+    .file-item {
+        padding: 0.75rem;
+    }
+    
+    .file-icon {
+        font-size: 1.5rem;
+    }
+}
+
+/* تحسينات للواجهة مع دعم اللمس */
+@media (hover: none) {
+    .card:hover {
+        transform: none;
+    }
+    
+    .btn-lg {
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+    }
+}
+
+/* أزرار وعناصر التحكم */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--light-text);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--light-text);
+}
+
+/* شريط التنقل */
+.navbar-dark {
+    background-color: var(--primary-color) !important;
+}
+
+/* تذييل الصفحة */
+footer.bg-dark {
+    background-color: var(--primary-color) !important;
+}
+
+/* تنسيقات إضافية للبحث */
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(142, 68, 173, 0.25);
+}
+
+/* تصحيح ألوان التنبيهات */
+.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+    color: #856404;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+}
+
+/* تحسين مظهر عناصر النموذج */
+.form-control, .form-select {
+    border-radius: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    color: var(--dark-text);
+    background-color: white;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--dark-text);
+}
+
+/* إصلاح تباين الألوان */
+a {
+    color: var(--primary-color);
+}
+
+a:hover {
+    color: var(--secondary-color);
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.nav-link:hover {
+    color: var(--light-text);
+}
+
+/* تحسين وضوح نتائج البحث */
+#searchResults .card {
+    margin-bottom: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+#searchResults .card-header {
+    font-size: 1.1rem;
+}
+
+#noResultsMessage {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* تحسين وضوح الأزرار على خلفيات مختلفة */
+.btn {
+    font-weight: 600;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--light-text);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: var(--light-text);
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    color: var(--light-text);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+    color: var(--light-text);
+}
+
+.btn-warning {
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
+    color: var(--dark-text);
+}

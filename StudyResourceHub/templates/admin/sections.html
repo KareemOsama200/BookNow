@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}إدارة الأقسام - {{ subject.name }} - منصة تعليمية{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3">
+        <div class="admin-sidebar">
+            <h4 class="px-3 mb-3 text-white">لوحة التحكم</h4>
+            <div class="nav flex-column">
+                <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
+                    <i class="fas fa-tachometer-alt me-1"></i> الرئيسية
+                </a>
+                <a class="nav-link active" href="{{ url_for('admin.manage_subjects') }}">
+                    <i class="fas fa-book me-1"></i> إدارة المواد
+                </a>
+                <a class="nav-link" href="{{ url_for('admin.stats') }}">
+                    <i class="fas fa-chart-bar me-1"></i> إحصائيات التحميل
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="col-md-9">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_subjects') }}">المواد الدراسية</a></li>
+                <li class="breadcrumb-item active">{{ subject.name }}</li>
+            </ol>
+        </nav>
+        
+        <h1 class="mb-4">إدارة أقسام "{{ subject.name }}"</h1>
+        
+        <!-- Add Section Button -->
+        <div class="mb-4">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSectionModal">
+                <i class="fas fa-plus me-1"></i> إضافة قسم جديد
+            </button>
+            
+            <a href="{{ url_for('admin.manage_subjects') }}" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-right me-1"></i> العودة للمواد
+            </a>
+        </div>
+        
+        <!-- Sections List -->
+        {% if sections %}
+        <div class="table-responsive">
+            <table class="table table-hover table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">اسم القسم</th>
+                        <th scope="col">الوصف</th>
+                        <th scope="col">عدد الملفات</th>
+                        <th scope="col">تاريخ الإنشاء</th>
+                        <th scope="col">الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for section in sections %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ section.name }}</td>
+                        <td>{{ section.description|truncate(30) if section.description else '-' }}</td>
+                        <td>{{ section.files|length }}</td>
+                        <td>{{ section.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('admin.manage_files', section_id=section.id) }}" class="btn btn-info" title="إدارة الملفات">
+                                    <i class="fas fa-file"></i>
+                                </a>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editSectionModal{{ section.id }}" title="تعديل">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger btn-delete" data-bs-toggle="modal" data-bs-target="#deleteSectionModal{{ section.id }}" title="حذف">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Edit Section Modal -->
+                            <div class="modal fade" id="editSectionModal{{ section.id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content bg-dark">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">تعديل قسم</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <form method="post" action="{{ url_for('admin.manage_sections', subject_id=subject.id) }}">
+                                            <div class="modal-body">
+                                                <input type="hidden" name="action" value="edit">
+                                                <input type="hidden" name="section_id" value="{{ section.id }}">
+                                                
+                                                <div class="mb-3">
+                                                    <label for="name{{ section.id }}" class="form-label">اسم القسم</label>
+                                                    <input type="text" class="form-control" id="name{{ section.id }}" name="name" value="{{ section.name }}" required>
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label for="description{{ section.id }}" class="form-label">الوصف (اختياري)</label>
+                                                    <textarea class="form-control" id="description{{ section.id }}" name="description" rows="3">{{ section.description }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                                                <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Delete Section Modal -->
+                            <div class="modal fade" id="deleteSectionModal{{ section.id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content bg-dark">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">تأكيد الحذف</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>هل أنت متأكد من حذف القسم "{{ section.name }}"؟</p>
+                                            <div class="alert alert-danger">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                                سيتم حذف جميع الملفات المرتبطة بهذا القسم.
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                                            <form method="post" action="{{ url_for('admin.manage_sections', subject_id=subject.id) }}">
+                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="section_id" value="{{ section.id }}">
+                                                <button type="submit" class="btn btn-danger">تأكيد الحذف</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            لا توجد أقسام في هذه المادة. أضف قسم جديد لبدء إدارة الملفات.
+        </div>
+        {% endif %}
+        
+        <!-- Add Section Modal -->
+        <div class="modal fade" id="addSectionModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title">إضافة قسم جديد</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="post" action="{{ url_for('admin.manage_sections', subject_id=subject.id) }}">
+                        <div class="modal-body">
+                            <input type="hidden" name="action" value="add">
+                            
+                            <div class="mb-3">
+                                <label for="name" class="form-label">اسم القسم</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="description" class="form-label">الوصف (اختياري)</label>
+                                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                            <button type="submit" class="btn btn-primary">إضافة القسم</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
